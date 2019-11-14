@@ -1,4 +1,4 @@
-story_text_array = [ ]
+story_object_array = [ ]
 source_array = [ ]
 
 def welcome_menu
@@ -66,13 +66,28 @@ def story_generator(input_1)
 	
 	def randomizer 
 	  index_array = [ ]
-	  x = story_text_array.length - 1 
 	  y = 0 
-	  while y <= x
+	  while y <= story_object_array.length - 1 
 	    index_array << y 
-	  end 
-	  
-	  z = index_array.sample 
+	  end
+	  z = index_array.sample
+	  puts story_object_array[z].name
+	  story_object_array.delete(z)
+	  puts "To continue reading, type continue"
+	  puts "To generate a new story, type new"
+	  input_7 = gets.strip
+	  if input_7 == "continue"
+	    puts story_object_array[z].text
+	    end_story_prompt
+	    elsif input_7 == "new"
+	    randomizer
+	    else
+	      welcome_menu
+	    end 
+	  end
+	end
+	    
+	    
 	  
 	
 	

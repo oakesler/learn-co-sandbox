@@ -4,7 +4,7 @@ require 'open-uri'
 
 @headline_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
 
-#binding.pry 
+binding.pry 
 
 def welcome_menu
 	puts "Welcome to Awoke! Select by story, news source, or use our randomizer."
@@ -141,5 +141,23 @@ def headline_and_source_generator
 end
 end
 
-
+def author_generator
+  splc_headline_array = @headline_hash[:SPLC].split
+  splc_max_word = splc_headline_array.max{|a, b| a.length <=> b.length}
+  
+  final_splc_link_array = [ ]
+  html_splc = open("https://www.splc.org")
+  doc_splc = Nokogiri::HTML(html_splc)
+  article_link_splc = doc_splc.css("div.field field-name-field-link field-type-link-field field-label-hidden")
+  href_array_splc = doc_splc.css("a")
+  href_array_splc.each do |item|
+    if item[0].attributes["href"].value.include?(splc_max_word)
+      final_splc_link_array << item
+    end
+  end
+  final_splc_link_array
 end
+end
+      
+      
+#lala[0].attributes["href"].value

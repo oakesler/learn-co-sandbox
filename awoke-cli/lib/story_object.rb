@@ -30,9 +30,9 @@ class Story
   def headline_scraper(url)
     html = open("#{url}")
     doc = Nokogiri::HTML(html)
-    binding.pry
     @title = doc.css('span.is-uppercase').text
   end
+end
     
     
   
@@ -58,7 +58,6 @@ class Story
 def temporary_title_scrape
   html = open("https://www.aclu.org/")
   doc = Nokogiri::HTML(html)
-  binding.pry
   title = doc.css('span.is-uppercase').text
 end
 

@@ -1,10 +1,13 @@
 require 'nokogiri'
 require 'pry'
 require 'open-uri'
+#require 'watir'
+#require 'selenium-webdriver'
 
 @headline_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
+@url_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
 
-binding.pry 
+binding.pry
 
 def welcome_menu
 	puts "Welcome to Awoke! Select by story, news source, or use our randomizer."
@@ -132,7 +135,7 @@ def headline_and_source_generator
   end
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
-  title_splc = doc.css("div.field-item even ")
+  title_splc = doc_splc.css("div.field-item even")
   if !!title_splc.match(/\w/)
     @headline_hash[:SPLC] = title_splc
   else
@@ -141,23 +144,95 @@ def headline_and_source_generator
 end
 end
 
-def author_generator
-  splc_headline_array = @headline_hash[:SPLC].split
-  splc_max_word = splc_headline_array.max{|a, b| a.length <=> b.length}
+def url_generator
+  ########################ACLU#######################
+  html_aclu = open("https://www.aclu.org")
+  doc_aclu = Nokogiri::HTML(html_aclu)
   
-  final_splc_link_array = [ ]
-  html_splc = open("https://www.splc.org")
+  ###########Amnesty###############
+  html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
-  article_link_splc = doc_splc.css("div.field field-name-field-link field-type-link-field field-label-hidden")
-  href_array_splc = doc_splc.css("a")
-  href_array_splc.each do |item|
-    if item[0].attributes["href"].value.include?(splc_max_word)
-      final_splc_link_array << item
-    end
-  end
-  final_splc_link_array
+  title_splc = doc_splc.css("div.field-item even")
+  
+  ##########HRW#############
+  html_splc = open("https://www.splcenter.org")
+  doc_splc = Nokogiri::HTML(html_splc)
+  title_splc = doc_splc.css("div.field-item even")
+  
+  #########SPLC###############
+  html_splc = open("https://www.splcenter.org")
+  doc_splc = Nokogiri::HTML(html_splc)
+  step_1 = doc_splc.css("section#highlighted")
+  step_2 = step_1.css("div.field-items")
+  step_3 = step_2[0].children
+  step_4 = step_3[1].children.text
+  step_5 = "#{step_4.match(/https.*\w/)}"
+  ############################
 end
 end
+  
+  
+
+
+#def google_url_generator
+  #url_array = [ ]
+  #########################
+  #html_aclu = open("https://google.com/search?q='#{@headline_hash[:ACLU]}'")
+  #3doc_aclu = Nokogiri::HTML(html_aclu)
+  #########################
+  #html_amnesty = open("https://google.com/search?q='#{@headline_hash[:Amnesty]}'")
+  #doc_amnesty = Nokogiri::HTML(html_amnesty)
+  #########################
+  #html_hrw = open("https://google.com/search?q='#{@headline_hash[:HRW]}'")
+  #doc_hrw = Nokogiri::HTML(html_hrw)
+  #########################
+  #split_title = @headline_hash[:SPLC].split
+  
+  
+  
+  
+  #html_splc = open("https://google.com/search?q=#{@headline_hash[:SPLC]}, splc")
+  #doc_splc = Nokogiri::HTML(html_splc)
+  #attempt_1 = doc_splc.css("div#main")
+  
+  
+  
+  
+  
+  #temp_array = [ ]
+  #splc_hrefs = doc_splc.css("a").map { |anchor| anchor["href"] }
+  #splc_hrefs.each do |item|
+    #if item.scan(/splc.org/)
+      #temp_array << item
+    #end
+  #end
+  
+  #########################
+
+#def author_generator
+  #final_splc_link_array = [ ]
+  #splc_max_word = @headline_hash[:SPLC].split.max{|a, b| a.length <=> b.length}
+  #html_splc = open("https://www.splc.org")
+  #doc_splc = Nokogiri::HTML(html_splc)
+  ##article_link_splc = doc_splc.css("div.field field-name-field-link field-type-link-field field-label-hidden")
+  #href_array_splc = doc_splc.css("a")
+  #href_array_splc.each do |item|
+    #if item.attributes["href"].value.include?(splc_max_word)
+      
+      
+      #final_splc_link_array << item
+    #end
+  #end
+  
+  #pry(main)> lala[30].children[1].children[0].text
+ 
+  #final_splc_link_array
+#end
+#end
+
+
+
+
       
       
 #lala[0].attributes["href"].value

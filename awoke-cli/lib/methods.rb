@@ -148,7 +148,12 @@ def url_generator
   ########################ACLU#######################
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
-  
+  step_a_1 = doc_aclu.css("div#hp__top_carousel")
+  step_a_2 = step_a_1.css("div.columns")
+  step_a_3 = step_a_2.children
+  step_a_4 = step_a_3[11]
+  step_a_5 = step_a_4.css("a").first
+  aclu_url = step_a_5.attributes["href"].value
   ###########Amnesty###############
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
@@ -166,7 +171,7 @@ def url_generator
   step_2 = step_1.css("div.field-items")
   step_3 = step_2[0].children
   step_4 = step_3[1].children.text
-  step_5 = "#{step_4.match(/https.*\w/)}"
+  @url_hash[:SPLC] = "#{step_4.match(/https.*\w/)}"
   ############################
 end
 end

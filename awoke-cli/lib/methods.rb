@@ -155,15 +155,15 @@ def url_generator
   step_a_5 = step_a_4.css("a").first
   aclu_url = step_a_5.attributes["href"].value
   ###########Amnesty###############
-  html_splc = open("https://www.splcenter.org")
-  doc_splc = Nokogiri::HTML(html_splc)
-  title_splc = doc_splc.css("div.field-item even")
-  
+  html_amnesty = open("https://www.amnesty.org/en")
+  doc_amnesty = Nokogiri::HTML(html_amnesty)
+  step_b_1 = doc_amnesty.css("a.btn--header")
+  amnesty_url = "https://www.amnesty.org/#{step_b_1}" 
   ##########HRW#############
-  html_splc = open("https://www.splcenter.org")
-  doc_splc = Nokogiri::HTML(html_splc)
-  title_splc = doc_splc.css("div.field-item even")
-  
+  html_hrw = open("https://www.hrw.org")
+  doc_hrw = Nokogiri::HTML(html_hrw)
+  step_c_1 = doc_hrw.css("")
+  hrw_url = doc_hrw.css("h3.billboard-title a").map { |link| link["href"] }
   #########SPLC###############
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
@@ -174,7 +174,8 @@ def url_generator
   @url_hash[:SPLC] = "#{step_4.match(/https.*\w/)}"
   ############################
 end
-end
+
+
   
   
 

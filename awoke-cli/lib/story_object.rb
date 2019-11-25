@@ -4,64 +4,20 @@ require "open-uri"
 
 class Story 
   
-  attr_accessor :name, :text, :source, :author, :article_url
+  attr_accessor :name, :abstract, :source, :url
   
-  @@story_object_array = [ ]
-  @@source_array = [ ]
+  @@story_array = [ ]
   
-  def initialize(source_name)
-    #def initialize
-    #@name = name 
-    #@text = text 
-    #@source = source
-    #@author = author
-    #if @author == "none"
-      #@author = "#{source}"
-    #end
-    #if !@@source_array.include?(self.source)
-      #@@source_array << self.source
-    #end
-    #@@story_object_array << self
-  #end
-#end
-
-  end
-  
-  def headline_scraper(url)
-    html = open("#{url}")
-    doc = Nokogiri::HTML(html)
-    @title = doc.css('span.is-uppercase').text
+  def initialize(source)
+    @source = source
+    @name = name 
+    @abstract = abstract
+    @url = url 
+    if !@@source_array.include?(self.source)
+      @@source_array << self.source
+      end
+    @@story_array << self
   end
 end
-    
-    
-  
-  
-  #def initialize(name, text, source, author = "none")
-    #@name = name 
-    #@text = text 
-    #@source = source
-    #@author = author
-    #if @author == "none"
-      #@author = "#{source}"
-    #end
-    #if !@@source_array.include?(self.source)
-      #@@source_array << self.source
-    #end
-    #@@story_object_array << self
-  #end
-#end
-
-
-#########################NOKOGIRI WORKSPACE#####################################
-
-def temporary_title_scrape
-  html = open("https://www.aclu.org/")
-  doc = Nokogiri::HTML(html)
-  title = doc.css('span.is-uppercase').text
-end
-
-temporary_title_scrape
-
 
 

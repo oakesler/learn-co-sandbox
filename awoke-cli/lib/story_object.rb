@@ -4,15 +4,16 @@ require "open-uri"
 
 class Story 
   
-  attr_accessor :name, :abstract, :source, :url
+  attr_accessor :headline, :abstract, :source, :story_url, :home_url
   
   @@story_array = [ ]
   
-  def initialize(source)
+  def initialize(source, home_url)
     @source = source
     @name = name 
     @abstract = abstract
     @url = url 
+    @headline = headline
     if !@@source_array.include?(self.source)
       @@source_array << self.source
       end

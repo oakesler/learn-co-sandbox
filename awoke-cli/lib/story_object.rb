@@ -1,23 +1,14 @@
-require "pry"
-require "nokogiri"
-require "open-uri"
+require_relative "awoke-cli/lib/methods.rb"
 
 class Story 
-  
   attr_accessor :headline, :abstract, :source, :story_url, :home_url
   
-  @@story_array = [ ]
-  
   def initialize(source, home_url)
-    @source = source
-    @name = name 
-    @abstract = abstract
-    @url = url 
     @headline = headline
-    if !@@source_array.include?(self.source)
-      @@source_array << self.source
-      end
-    @@story_array << self
+    @abstract = abstract
+    @source = source
+    @story_url = story_url
+    @home_url = home_url
   end
 end
 

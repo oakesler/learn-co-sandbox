@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative "/home/oakesler/Development/awoke-cli/bin/awoke-cli/lib/methods.rb"
+
+story_generator
+
+welcome_menu

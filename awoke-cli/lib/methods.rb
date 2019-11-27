@@ -1,35 +1,32 @@
 require 'nokogiri'
 require 'pry'
 require 'open-uri'
+require_relative "awoke-cli/lib/story_object.rb"
+require_r
 
 @story_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " ", :Backup => " "}
 
-@headline_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
-@url_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
-
-@abstract_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " "}
-
 def story_generator
   aclu_story = Story.new("ACLU", "https://www.aclu.org")
-  aclu_story.headline = headline_generator("https://www.aclu.org")
-  aclu_story.url = url_generator("https://www.aclu.org")
-  aclu_story.abstract = abstract_generator(aclu_story.url)
+  aclu_story.headline = aclu_headline_scraper
+  aclu_story.url = aclu_url_scraper("https://www.aclu.org")
+  aclu_story.abstract = aclu_abstract_scraper(aclu_story.url)
   @story_hash[:ACLU] = aclu_story
   #------------------------------------------
   amnesty_story = Story.new("Amnesty International USA", "www.amnestyusa.org")
-  amnesty_story.headline = headline_generator("www.amnestyusa.org")
-  amnesty_story.url = url_generator("www.amnestyusa.org")
+  amnesty_story.headline = amnesty_headline_scraper
+  amnesty_story.url = amnesty_url_scraper
   amnesty_story.abstract = abstract_generator(amnesty_story.url)
   @story_hash[:Amnesty] = amnesty_story
   #------------------------------------------
   hrw_story = Story.new("Human Rights Watch", "www.hrw.org")
-  hrw_story.headline = headline_generator("www.hrw.org")
-  hrw_story.url = url_generator("www.hrw.org")
+  hrw_story.headline = hrw_headline_scraper
+  hrw_story.url = hrw_url_scaper
   hrw_story.abstract = abstract_generator(hrw_story.abstract)
   @story_hash[:HRW] = hrw_story
   #------------------------------------------
   splc_story = Story.new("Southern Poverty Law Center", "www.splcenter.org")
-  splc_story_headline = headline_generator("www.splcenter.org")
+  splc_story_headline = splc_headline_scraper
   splc_story.url = url_generator("www.splcenter.org")
   splc_story.abstract = abstract_generator(splc_story.url)
   @story_hash[:SPLC] = splc_story
@@ -44,16 +41,37 @@ def welcome_menu
 	input_1 = gets.strip
 	if input_1 == "exit" || "Exit"
 		puts "Thanks for using Awoke!"
-	elsif input_1 == "story" || "Story"
-		###################################################################################
-		
-		##################################################################################
-		elsif input_1 == "random" || "Random"
-		randomizer
+		elsif input_1 == "story" || "Story"
+		puts @story_hash[:ACLU].headline
+	  puts @story_hash[:Amnesty].headline
+	  puts @story_hash[:HRW].headline
+	  puts @story_hash[:SPLC].headline
+	  elsif input_1 == "random" || "Random"
+	  randomizer
+	  puts @story_hash.sample.headline
 		else
 		  menu_redirect
+		end
   end 
 end
+
+def randomizer
+  random_story = @story_hash.sample
+  puts random_story.headline
+  puts random_story.abstract_generator
+  puts random_story.story_url
+  puts "To generate a new story, type 'random'"
+  puts "To return to main menu, type 'menu'"
+  input = gets.strip
+  if input == "random" || "Random"
+    randomizer 
+    elsif input == "menu" || "Menu"
+    welcome_menu
+  else
+    menu_redirect
+  end
+end 
+  
 
 def menu_redirect
   puts "Sorry, we don't recognize that input. Returning to main menu..."
@@ -75,83 +93,45 @@ def randomizer_selector(story, array)
 	end
 end
 
-def headline_generator(url)
-  if url == "https://www.aclu.org"
-    html_aclu = open(url)
-    doc_aclu = Nokogiri::HTML(html_aclu)
-    headline_aclu = doc_aclu.css('span.is-uppercase').text 
-    headline_finisher(headline_aclu, "ACLU")
-    elsif url == "https://www.amnesty.org/en/"
-    html_amnesty = open(url)
-    doc_amnesty = Nokogiri::HTML(html_amnesty)
-    headline_amnesty = "#{doc.css('span.heading--tape').text} : #{doc.css('p.image-headline__copy')}"
-    headline_finisher(headline_amnesty, "Amnesty International")
-    elsif url == "https://www.hrw.org/#"
-    html_hrw = open(url)
-    doc_hrw = Nokogiri::HTML(html_hrw)
-    headline_hrw = doc.css('h3.billboard-title')
-    headline_finisher(headline_hrw, "HRW")
-    elsif url == "https://www.splcenter.org"
-    html_splc = open(url)
-    doc_splc = Nokogiri::HTML(html_splc)
-    headline_splc = doc_splc.css("div.field-item even")
-    headline_finisher(headline_hrw, "SPLC")
-  else 
-    menu_redirect
-  end
+def aclu_headline_scraper
+  html_aclu = open("https://www.aclu.org")
+  doc_aclu = Nokogiri::HTML(html_aclu)
+  headline_aclu = doc_aclu.css('span.is-uppercase').text 
+  headline_finisher(headline_aclu, "ACLU")
 end
-  
-def headline_finisher(headline, source)
-  if source == "ACLU"
-    if headline.match(/\w/)
-      @story_hash[:ACLU].headline == headline
-    elsif source == "Amnesty"
-      elsif source == "HRW"
-      elsif source == "SPLC"
-    if !!headline.match(/\w/)
-      headline
-    else 
-      puts "Waiting on #{url} headline..."
-    end 
-  end
-    
-      
-      
 
-  
-  
-  
-  
-  
+def amnesty_headline_scraper
   html_amnesty = open("https://www.amnesty.org/en/")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
-  title_amnesty = "#{doc.css('span.heading--tape').text} : #{doc.css('p.image-headline__copy')}"
-  if !!title_amnesty.match(/\w/)
-    @headline_hash[:Amnesty] = title_amnesty
-  else
-    puts "Waiting on Amnesty International headline..."
-  end
-  html_hrw = open("https://www.hrw.org/#")
-  doc_hrw = Nokogiri::HTML(html_hrw)
-  title_hrw = doc.css('h3.billboard-title')
-  if !!title_hrw.match(/\w/)
-    @headline_hash[:HRW] = title_hrw
-  else
-    puts "Waiting on Human Rights Watch headline..."
-  end
-  html_splc = open("https://www.splcenter.org")
-  doc_splc = Nokogiri::HTML(html_splc)
-  title_splc = doc_splc.css("div.field-item even")
-  if !!title_splc.match(/\w/)
-    @headline_hash[:SPLC] = title_splc
-  else
-    puts "Waiting on SPLC headline..."
-  end
-end
+  headline_amnesty = "#{doc.css('span.heading--tape').text} : #{doc.css('p.image-headline__copy')}"
+  headline_finisher(headline_amnesty, "Amnesty International")
 end
 
-def url_generator
-  ########################ACLU#######################
+def hrw_headline_scraper
+  html_hrw = open("https://www.hrw.org/#")
+  doc_hrw = Nokogiri::HTML(html_hrw)
+  headline_hrw = doc.css('h3.billboard-title')
+  headline_finisher(headline_hrw, "HRW")
+end
+
+def splc_headline_scraper
+  html_splc = open("https://www.splcenter.org")
+  doc_splc = Nokogiri::HTML(html_splc)
+  headline_splc = doc_splc.css("div.field-item even")
+  headline_finisher(headline_hrw, "SPLC")
+end
+####################################################################  
+def headline_finisher(headline, source)
+  source_list = ["ACLU", "Amnesty", "HRW", "SPLC"]
+  if headline.match(/\w/)
+    @story_hash[:"#{source}"].headline == headline
+    else
+      puts "Waiting on #{source} headline..."
+    end
+  end
+end
+####################################################################
+def aclu_url_scraper
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
   step_a_1 = doc_aclu.css("div#hp__top_carousel")
@@ -160,17 +140,23 @@ def url_generator
   step_a_4 = step_a_3[11]
   step_a_5 = step_a_4.css("a").first
   aclu_url = step_a_5.attributes["href"].value
-  ###########Amnesty###############
+end
+
+def amnesty_url_scraper 
   html_amnesty = open("https://www.amnesty.org/en")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
   step_b_1 = doc_amnesty.css("a.btn--header")
-  amnesty_url = "https://www.amnesty.org/#{step_b_1}" 
-  ##########HRW#############
+  amnesty_url = "https://www.amnesty.org/#{step_b_1}"
+end 
+
+def hrw_url_scraper
   html_hrw = open("https://www.hrw.org")
   doc_hrw = Nokogiri::HTML(html_hrw)
   hrw_url = "https://www.hrw.org#{doc_hrw.css("h3.billboard-title a").map { |link| link["href"] }[0]}"
   @url_hash[:HRW] = hrw_url
-  #########SPLC###############
+end
+
+def splc_url_scraper
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
   step_1 = doc_splc.css("section#highlighted")
@@ -178,26 +164,29 @@ def url_generator
   step_3 = step_2[0].children
   step_4 = step_3[1].children.text
   @url_hash[:SPLC] = "#{step_4.match(/https.*\w/)}"
-  ############################
+end
+####################################################################
+def aclu_abstract_generator
+  html_aclu = open("#{@story_hash[:ACLU].story_url}")
+  doc_aclu = Nokogiri::HTML(html_aclu)
+  aclu_abstract = doc_aclu.css("div#tabs").text
 end
 
-def abstract_generator
-  #################ACLU################
-  html_aclu = open("#{@url_hash[:ACLU]}")
-  doc_aclu = Nokogiri::HTML(html_aclu)
-  @abstract_hash[:ACLU] = doc_aclu.css("div#tabs").text
-  ##############Amnesty################
-  html_amnesty = open("#{@url_hash[:Amnesty]}")
+def amnesty_abstract_generator
+  html_amnesty = open("#{@story_hash[:Amnesty].story_url}")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
-  @abstract_hash[:Amnesty] = doc_amnesty.css("p").text
-  ################HRW###################
-  html_hrw = open("#{@url_hash[:HRW]}")
+  amnesty_abstract = doc_amnesty.css("p").text
+end
+
+def hrw_abstract_generator
+  html_hrw = open("#{@story_hash[:HRW].story_url}")
   doc_hrw = Nokogiri::HTML(html_hrw)
   step_c_1 = doc_hrw.css("p")
-  @abstract_hash[:HRW] = step_c_1[3]
-  ##############SPLC##################
-  html_splc = open("#{@url_hash[:SPLC]}")
-  doc_splc = Nokogiri::HTML(html_splc)
-  @abstract_hash[:SPLC] = doc_splc.css("p").first.text
+  hrw_abstract = step_c_1[3]
 end
+
+def splc_abstract_generator
+  html_splc = open("#{@story_hash[:SPLC].story_url}")
+  doc_splc = Nokogiri::HTML(html_splc)
+  splc_abstract = doc_splc.css("p").first.text
 end

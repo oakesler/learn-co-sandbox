@@ -4,11 +4,7 @@ require "/home/oakesler/Development/awoke-cli/lib/story_object.rb"
 require 'nokogiri'
 
 require 'open-uri'
-
-
 @story_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " ", :Backup => " "}
- 
-binding.pry
 
 def the_aclu_headline_scraper
   html_aclu = open("https://www.aclu.org")
@@ -36,8 +32,7 @@ def the_splc_headline_scraper
   headline_splc = doc_splc.css("h1").first.text
 end
 
-#####################################################################################################
-def aclu_url_scraper
+def the_aclu_url_scraper
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
   step_a_1 = doc_aclu.css("div#hp__top_carousel")
@@ -48,104 +43,158 @@ def aclu_url_scraper
   aclu_url = step_a_5.attributes["href"].value
 end
 
-def aclu_abstract_scraper
-  html_aclu = open("#{@story_hash[:ACLU].story_url}")
-  doc_aclu = Nokogiri::HTML(html_aclu)
-  aclu_abstract = doc_aclu.css("div#tabs").text
-end
-
-def amnesty_headline_scraper
-  html_amnesty = open("https://www.amnesty.org/en/")
-  doc_amnesty = Nokogiri::HTML(html_amnesty)
-  headline_amnesty = "#{doc.css('span.heading--tape').text} : #{doc.css('p.image-headline__copy')}"
-  headline_finisher(headline_amnesty, "Amnesty International")
-end
-
-def amnesty_url_scraper 
+def the_amnesty_url_scraper 
   html_amnesty = open("https://www.amnesty.org/en")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
-  step_b_1 = doc_amnesty.css("a.btn--header")
-  amnesty_url = "https://www.amnesty.org/#{step_b_1}"
+  step_1 = doc_amnesty.xpath('//div/a/@href')
+  step_2 = step_1[9].text
+  amnesty_url = "https://www.amnesty.org/#{step_2}"
 end 
 
-def amnesty_abstract_scraper
-  html_amnesty = open("#{@story_hash[:Amnesty].story_url}")
-  doc_amnesty = Nokogiri::HTML(html_amnesty)
-  amnesty_abstract = doc_amnesty.css("p").text
-end
-
-def hrw_headline_scraper
-  html_hrw = open("https://www.hrw.org/#")
-  doc_hrw = Nokogiri::HTML(html_hrw)
-  headline_hrw = doc.css('h3.billboard-title')
-  headline_finisher(headline_hrw, "HRW")
-end
-
-def hrw_url_scraper
+def the_hrw_url_scraper
   html_hrw = open("https://www.hrw.org")
   doc_hrw = Nokogiri::HTML(html_hrw)
   hrw_url = "https://www.hrw.org#{doc_hrw.css("h3.billboard-title a").map { |link| link["href"] }[0]}"
-  #@url_hash[:HRW] = hrw_url
 end
 
-def hrw_abstract_scraper
-  html_hrw = open("#{@story_hash[:HRW].story_url}")
-  doc_hrw = Nokogiri::HTML(html_hrw)
-  step_c_1 = doc_hrw.css("p")
-  hrw_abstract = step_c_1[3]
-end
-
-def splc_headline_scraper
-  html_splc = open("https://www.splcenter.org")
-  doc_splc = Nokogiri::HTML(html_splc)
-  headline_splc = doc_splc.css("div.field-item even")
-  headline_finisher(headline_hrw, "SPLC")
-end
-
-def splc_url_scraper
+def the_splc_url_scraper
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
   step_1 = doc_splc.css("section#highlighted")
   step_2 = step_1.css("div.field-items")
   step_3 = step_2[0].children
   step_4 = step_3[1].children.text
-  #@url_hash[:SPLC] = "#{step_4.match(/https.*\w/)}"
+  splc_url = step_4.match(/https.*\w/)
 end
 
-def splc_abstract_scraper
-  html_splc = open("#{@story_hash[:SPLC].story_url}")
+def the_aclu_abstract_scraper
+  html_aclu = open("#{the_aclu_url_scraper}")
+  doc_aclu = Nokogiri::HTML(html_aclu)
+  aclu_abstract = doc_aclu.css("div#tabs").text
+end
+
+def the_amnesty_abstract_scraper
+  html_amnesty = open("#{the_amnesty_url_scraper}")
+  doc_amnesty = Nokogiri::HTML(html_amnesty)
+  amnesty_abstract = doc_amnesty.css("p").text
+end
+
+def the_hrw_abstract_scraper
+  html_hrw = open("#{the_hrw_url_scraper}")
+  doc_hrw = Nokogiri::HTML(html_hrw)
+  step_1 = doc_hrw.css("p")
+  hrw_abstract = "#{step_1[4].text}   #{step_1[5].text}   #{step_1[6].text}"
+end
+
+def the_splc_abstract_scraper
+  html_splc = open("#{the_splc_url_scraper}")
   doc_splc = Nokogiri::HTML(html_splc)
   splc_abstract = doc_splc.css("p").first.text
 end
+
+
+
+#####################################################################################################
+#def aclu_abstract_scraper
+  #html_aclu = open("#{@story_hash[:ACLU].story_url}")
+  #doc_aclu = Nokogiri::HTML(html_aclu)
+  #aclu_abstract = doc_aclu.css("div#tabs").text
+#end
+
+#def amnesty_headline_scraper
+  #html_amnesty = open("https://www.amnesty.org/en/")
+  #doc_amnesty = Nokogiri::HTML(html_amnesty)
+  #headline_amnesty = "#{doc.css('span.heading--tape').text} : #{doc.css('p.image-headline__copy')}"
+  #headline_finisher(headline_amnesty, "Amnesty International")
+#end
+
+#def amnesty_url_scraper 
+  #html_amnesty = open("https://www.amnesty.org/en")
+  #doc_amnesty = Nokogiri::HTML(html_amnesty)
+  #step_b_1 = doc_amnesty.css("a.btn--header")
+  #amnesty_url = "https://www.amnesty.org/#{step_b_1}"
+#end 
+
+#def amnesty_abstract_scraper
+  #html_amnesty = open("#{@story_hash[:Amnesty].story_url}")
+  #doc_amnesty = Nokogiri::HTML(html_amnesty)
+  #amnesty_abstract = doc_amnesty.css("p").text
+#end
+
+#def hrw_headline_scraper
+  #html_hrw = open("https://www.hrw.org/#")
+  #doc_hrw = Nokogiri::HTML(html_hrw)
+  #headline_hrw = doc.css('h3.billboard-title')
+  #headline_finisher(headline_hrw, "HRW")
+#end
+
+#def hrw_url_scraper
+  #html_hrw = open("https://www.hrw.org")
+  #doc_hrw = Nokogiri::HTML(html_hrw)
+  #hrw_url = "https://www.hrw.org#{doc_hrw.css("h3.billboard-title a").map { |link| link["href"] }[0]}"
+  #@url_hash[:HRW] = hrw_url
+#end
+
+#def hrw_abstract_scraper
+  #html_hrw = open("#{@story_hash[:HRW].story_url}")
+  #doc_hrw = Nokogiri::HTML(html_hrw)
+  #step_c_1 = doc_hrw.css("p")
+  #hrw_abstract = step_c_1[3]
+#end
+
+#def splc_headline_scraper
+  #html_splc = open("https://www.splcenter.org")
+  #doc_splc = Nokogiri::HTML(html_splc)
+  #headline_splc = doc_splc.css("div.field-item even")
+  #headline_finisher(headline_hrw, "SPLC")
+#end
+
+#def splc_url_scraper
+  #html_splc = open("https://www.splcenter.org")
+  #doc_splc = Nokogiri::HTML(html_splc)
+  #step_1 = doc_splc.css("section#highlighted")
+  #step_2 = step_1.css("div.field-items")
+  #step_3 = step_2[0].children
+  #step_4 = step_3[1].children.text
+  #@url_hash[:SPLC] = "#{step_4.match(/https.*\w/)}"
+#end
+
+#def splc_abstract_scraper
+  #html_splc = open("#{@story_hash[:SPLC].story_url}")
+  #doc_splc = Nokogiri::HTML(html_splc)
+  #splc_abstract = doc_splc.css("p").first.text
+#end
 
 ######################################################################################
 def aclu_object_maker
   aclu_story = Story.new("ACLU", "www.aclu.org")
   aclu_story.headline = the_aclu_headline_scraper
+  aclu_story.story_url = the_aclu_url_scraper
+  aclu_story.abstract = the_aclu_abstract_scraper
   @story_hash[:ACLU] = aclu_story
 end
 
 def amnesty_object_maker 
   amnesty_story = Story.new("Amnesty International USA", "www.amnestyusa.org")
   amnesty_story.headline = the_amnesty_headline_scraper
-  #amnesty_story.url = amnesty_url_scraper
-  #amnesty_story.abstract = abstract_generator(amnesty_story.url)
+  amnesty_story.story_url = the_amnesty_url_scraper
+  amnesty_story.abstract = the_amnesty_abstract_scraper
   @story_hash[:Amnesty] = amnesty_story
 end
 
 def hrw_object_maker
   hrw_story = Story.new("Human Rights Watch", "www.hrw.org")
   hrw_story.headline = the_hrw_headline_scraper
-  #hrw_story.url = hrw_url_scaper
-  #hrw_story.abstract = abstract_generator(hrw_story.abstract)
+  hrw_story.story_url = the_hrw_url_scraper
+  hrw_story.abstract = the_hrw_abstract_scraper
   @story_hash[:HRW] = hrw_story
 end
 
 def splc_object_maker
   splc_story = Story.new("Southern Poverty Law Center", "www.splcenter.org")
   splc_story.headline = the_splc_headline_scraper
-  #splc_story.url = url_generator("www.splcenter.org")
-  #splc_story.abstract = abstract_generator(splc_story.url)
+  splc_story.story_url = the_splc_url_scraper
+  splc_story.abstract = the_splc_abstract_scraper
   @story_hash[:SPLC] = splc_story
 end
 
@@ -157,21 +206,41 @@ def execute_experiment
 end
 
 def welcome_menu
+  puts "Initializing, this may take a moment"
   execute_experiment
-  puts "Welcome to Awoke! Select by story, news source, or use our randomizer."
+  puts "Welcome to WokeApp! Select by story or use our randomizer."
 	puts "For story selection, type ‘story'"
-	puts "For source selection, type ‘source'"
 	puts "For randomizer, type ‘random'"
 	puts "To exit, type ‘exit’"
 	input = gets.strip
 	if input == "exit"
-		puts "Thanks for using Awoke!"
+		puts "Thanks for using WokeApp!"
 		elsif input == "story"
 		story_selector
-		else 
+		elsif input == "random"
+		randomizer
+		else
 		  menu_redirect
 		end
   end 
+
+def story_selector_segue
+  puts "To view another story, type 'stories'"
+  puts "To generate a random story, type 'random'"
+  puts "To return to main menu, type 'menu'"
+  input = gets.strip
+  if input == "stories"
+    story_selector
+    elsif input == "menu"
+    welcome_menu
+    elsif input == "random"
+    randomizer
+  else
+    menu_redirect
+  end
+end
+
+
 
 def story_selector
   puts "Please select a headline by number (1-4)"
@@ -179,33 +248,97 @@ def story_selector
   puts "2. #{@story_hash[:Amnesty].headline}"
   puts "3. #{@story_hash[:HRW].headline}"
   puts "4. #{@story_hash[:SPLC].headline}"
-  x = gets.strip
+  input = gets.strip
   if input == "1"
+    puts "*****************************"
     puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
-    puts "#{@story_hash[:ACLU].home_url}"
+    puts "*****************************"
     puts "#{@story_hash[:ACLU].headline}"
+    puts "*****************************"
     puts "#{@story_hash[:ACLU].story_url}"
+    puts "*****************************"
     puts "#{@story_hash[:ACLU].abstract}"
+    story_selector_segue
     elsif input == "2"
+    puts "*****************************"
     puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
-    puts "#{@story_hash[:Amnesty].home_url}"
+    puts "*****************************"
     puts "#{@story_hash[:Amnesty].headline}"
+    puts "*****************************"
     puts "#{@story_hash[:Amnesty].story_url}"
+    puts "*****************************"
     puts "#{@story_hash[:Amnesty].abstract}"
+    story_selector_segue
     elsif input == "3"
+    puts "*****************************"
     puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
-    puts "#{@story_hash[:HRW].home_url}"
+    puts "*****************************"
     puts "#{@story_hash[:HRW].headline}"
+    puts "*****************************"
     puts "#{@story_hash[:HRW].story_url}"
+    puts "*****************************"
     puts "#{@story_hash[:HRW].abstract}"
+    story_selector_segue
     elsif input == "4"
+    puts "*****************************"
     puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
-    puts "#{@story_hash[:SPLC].home_url}"
+    puts "*****************************"
     puts "#{@story_hash[:SPLC].headline}"
+    puts "*****************************"
     puts "#{@story_hash[:SPLC].story_url}"
+    puts "*****************************"
     puts "#{@story_hash[:SPLC].abstract}"
+    story_selector_segue
   else 
     menu_redirect
+  end
+end
+
+def randomizer
+  sample_array = [1, 2, 3, 4]
+  x = sample_array.sample
+  if x == "1"
+    puts "*****************************"
+    puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
+    puts "*****************************"
+    puts "#{@story_hash[:ACLU].headline}"
+    puts "*****************************"
+    puts "#{@story_hash[:ACLU].story_url}"
+    puts "*****************************"
+    puts "#{@story_hash[:ACLU].abstract}"
+    story_selector_segue
+    elsif x == "2"
+    puts "*****************************"
+    puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
+    puts "*****************************"
+    puts "#{@story_hash[:Amnesty].headline}"
+    puts "*****************************"
+    puts "#{@story_hash[:Amnesty].story_url}"
+    puts "*****************************"
+    puts "#{@story_hash[:Amnesty].abstract}"
+    story_selector_segue
+    elsif x == "3"
+    puts "*****************************"
+    puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
+    puts "*****************************"
+    puts "#{@story_hash[:HRW].headline}"
+    puts "*****************************"
+    puts "#{@story_hash[:HRW].story_url}"
+    puts "*****************************"
+    puts "#{@story_hash[:HRW].abstract}"
+    story_selector_segue
+    elsif x == "4"
+    puts "*****************************"
+    puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
+    puts "*****************************"
+    puts "#{@story_hash[:SPLC].headline}"
+    puts "*****************************"
+    puts "#{@story_hash[:SPLC].story_url}"
+    puts "*****************************"
+    puts "#{@story_hash[:SPLC].abstract}"
+    story_selector_segue
+  else 
+    story_selector_segue
   end
 end
   

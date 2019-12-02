@@ -1,4 +1,4 @@
-require_relative "awoke-cli/lib/methods.rb"
+require_relative "../config/environment"
 
 class Story 
   attr_accessor :headline, :abstract, :source, :story_url, :home_url

@@ -11,7 +11,9 @@ binding.pry
 def the_aclu_headline_scraper
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
-  headline_aclu = doc_aclu.css('span.is-uppercase').text 
+  step_1 = doc_aclu.css("div#hp__top_spotlight")
+  headline_aclu = step_1.css("div")[4].children[0].text
+  #headline_aclu = doc_aclu.css('span.is-uppercase').text 
 end
 
 def the_amnesty_headline_scraper

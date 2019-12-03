@@ -2,5 +2,7 @@
 
 require_relative "../config/environment"
 
+puts "Gathering news, this may take a moment..."
+execute_experiment
 welcome_menu
 

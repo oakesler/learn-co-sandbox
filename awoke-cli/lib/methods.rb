@@ -6,8 +6,6 @@ require 'nokogiri'
 require 'open-uri'
 @story_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " ", :Backup => " "}
 
-binding.pry
-
 def the_aclu_headline_scraper
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
@@ -139,8 +137,6 @@ def execute_experiment
 end
 
 def welcome_menu
-  puts "Initializing, this may take a moment"
-  execute_experiment
   puts "Welcome to WokeApp! Select by story or use our randomizer."
 	puts "For story selection, type ‘story'"
 	puts "For randomizer, type ‘random'"
@@ -179,6 +175,7 @@ def story_selector
   puts "2. #{@story_hash[:Amnesty].headline}"
   puts "3. #{@story_hash[:HRW].headline}"
   puts "4. #{@story_hash[:SPLC].headline}"
+  puts "...or type 'back' to return to the previous page"
   input = gets.strip
   if input == "1"
     puts "*****************************"
@@ -219,6 +216,8 @@ def story_selector
     puts "#{@story_hash[:SPLC].story_url}"
     puts "*****************************"
     puts "#{@story_hash[:SPLC].abstract}"
+    story_selector_segue
+    elsif input = "back"
     story_selector_segue
   else 
     menu_redirect

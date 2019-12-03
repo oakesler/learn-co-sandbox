@@ -6,6 +6,8 @@ require 'nokogiri'
 require 'open-uri'
 @story_hash = {:ACLU => " " , :Amnesty => " ", :HRW => " " , :SPLC => " ", :Backup => " "}
 
+binding.pry 
+
 def the_aclu_headline_scraper
   html_aclu = open("https://www.aclu.org")
   doc_aclu = Nokogiri::HTML(html_aclu)
@@ -75,7 +77,8 @@ end
 def the_aclu_abstract_scraper
   html_aclu = open("#{the_aclu_url_scraper}")
   doc_aclu = Nokogiri::HTML(html_aclu)
-  aclu_abstract = doc_aclu.css("div#tabs").text
+  aclu_abstract = "#{doc_aclu.css("p")[1].text}     #{doc_aclu.css("p")[2].text}"
+  #aclu_abstract = doc_aclu.css("div#tabs").text
 end
 
 def the_amnesty_abstract_scraper

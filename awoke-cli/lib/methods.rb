@@ -189,7 +189,8 @@ def aclu_story_display
   puts "                            "
   puts "#{@story_hash[:ACLU].abstract}"
   puts "                             "
-  puts "Continue reading at #{@story_hash[:ACLU].story_url}"
+  puts "Continue reading at"
+  puts "#{@story_hash[:ACLU].story_url}"
   puts "                                 "
   story_selector_segue
 end
@@ -203,7 +204,8 @@ def amnesty_story_display
   puts "                               "
   puts "#{@story_hash[:Amnesty].abstract}"
   puts "              "
-  puts "Continue reading at #{@story_hash[:Amnesty].story_url}"
+  puts "Continue reading at..."
+  puts "#{@story_hash[:Amnesty].story_url}"
   puts "                    "
   story_selector_segue
 end
@@ -217,7 +219,8 @@ def hrw_story_display
   puts "                                 "
   puts "#{@story_hash[:HRW].abstract}"
   puts "    "
-  puts "Continue reading at #{@story_hash[:HRW].story_url}"
+  puts "Continue reading at ..." 
+  puts "#{@story_hash[:HRW].story_url}"
   puts "           "
   story_selector_segue
 end
@@ -231,7 +234,9 @@ def splc_story_display
   puts "                               "
   puts "#{@story_hash[:SPLC].abstract}"
   puts "                               "
-  puts "Continue reading at #{@story_hash[:SPLC].story_url}"
+  puts "Continue reading at..."
+  puts "#{@story_hash[:SPLC].story_url}"
+  puts "                          "
   story_selector_segue
 end
 
@@ -266,49 +271,13 @@ def randomizer
   sample_array = [1, 2, 3, 4]
   x = sample_array.sample
   if x == 1
-    puts "                            "
-    puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:ACLU].headline}"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:ACLU].story_url}"
-    puts "          "
-    puts "#{@story_hash[:ACLU].abstract}"
-    puts "             "
-    story_selector_segue
+    aclu_story_display
     elsif x == 2
-    puts "                   "
-    puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:Amnesty].headline}"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:Amnesty].story_url}"
-    puts "                             "
-    puts "#{@story_hash[:Amnesty].abstract}"
-    puts "                              "
-    story_selector_segue
+    amnesty_story_display
     elsif x == 3
-    puts "                              "
-    puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:HRW].headline}"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:HRW].story_url}"
-    puts "                               "
-    puts "#{@story_hash[:HRW].abstract}"
-    puts "                                "
-    story_selector_segue
+    hrw_story_display
     elsif x == 4
-    puts "                                "
-    puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:SPLC].headline}"
-    puts "------------------------------------------"
-    puts "#{@story_hash[:SPLC].story_url}"
-    puts "                                "
-    puts "#{@story_hash[:SPLC].abstract}"
-    puts "                                 "
-    story_selector_segue
+    splc_story_display
   else 
     story_selector_segue
   end

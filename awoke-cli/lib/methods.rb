@@ -83,7 +83,9 @@ end
 def the_amnesty_abstract_scraper
   html_amnesty = open("#{the_amnesty_url_scraper}")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
-  amnesty_abstract = doc_amnesty.css("p").text
+  amnesty_abstract = doc_amnesty.css("p")[6].text
+  #----------previous scrape------------------
+  #amnesty_abstract = doc_amnesty.css("p").text
 end
 
 def the_hrw_abstract_scraper
@@ -170,10 +172,67 @@ def story_selector_segue
     elsif input == "random"
     randomizer
     elsif input == "exit"
+    puts "        "
     puts "Thanks for using WokeApp!"
   else
     menu_redirect
   end
+end
+
+def aclu_story_display
+  puts "                      "
+  puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
+  puts "                          "
+  puts "------------------------------------------"
+  puts "#{@story_hash[:ACLU].headline}"
+  puts "------------------------------------------"
+  puts "                            "
+  puts "#{@story_hash[:ACLU].abstract}"
+  puts "                             "
+  puts "Continue reading at #{@story_hash[:ACLU].story_url}"
+  puts "                                 "
+  story_selector_segue
+end
+
+def amnesty_story_display
+  puts "                          "
+  puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
+  puts "------------------------------------------"
+  puts "#{@story_hash[:Amnesty].headline}"
+  puts "------------------------------------------"
+  puts "                               "
+  puts "#{@story_hash[:Amnesty].abstract}"
+  puts "              "
+  puts "Continue reading at #{@story_hash[:Amnesty].story_url}"
+  puts "                    "
+  story_selector_segue
+end
+
+def hrw_story_display
+  puts "                           "
+  puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
+  puts "------------------------------------------"
+  puts "#{@story_hash[:HRW].headline}"
+  puts "------------------------------------------"
+  puts "                                 "
+  puts "#{@story_hash[:HRW].abstract}"
+  puts "    "
+  puts "Continue reading at #{@story_hash[:HRW].story_url}"
+  puts "           "
+  story_selector_segue
+end
+
+def splc_story_display
+  puts "                             "
+  puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
+  puts "------------------------------------------"
+  puts "#{@story_hash[:SPLC].headline}"
+  puts "------------------------------------------"
+  puts "                               "
+  puts "#{@story_hash[:SPLC].abstract}"
+  puts "                               "
+  puts "Continue reading at #{@story_hash[:SPLC].story_url}"
+  story_selector_segue
 end
 
 def story_selector
@@ -185,53 +244,17 @@ def story_selector
   puts "3. #{@story_hash[:HRW].headline}"
   puts "4. #{@story_hash[:SPLC].headline}"
   puts "                                        "
-  puts "...or type 'back' to return to the previous page"
+  puts "...or type 'back' to return to menu"
   puts "                           "
   input = gets.strip
   if input == "1"
-    puts "                      "
-    puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
-    puts "                            "
-    puts "#{@story_hash[:ACLU].headline}"
-    puts "                           "
-    puts "#{@story_hash[:ACLU].story_url}"
-    puts "                            "
-    puts "#{@story_hash[:ACLU].abstract}"
-    puts "                             "
-    story_selector_segue
+    aclu_story_display
     elsif input == "2"
-    puts "                          "
-    puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
-    puts "                           "
-    puts "#{@story_hash[:Amnesty].headline}"
-    puts "                            "
-    puts "#{@story_hash[:Amnesty].story_url}"
-    puts "                               "
-    puts "#{@story_hash[:Amnesty].abstract}"
-    puts "                                "
-    story_selector_segue
+    amnesty_story_display
     elsif input == "3"
-    puts "                           "
-    puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
-    puts "                            "
-    puts "#{@story_hash[:HRW].headline}"
-    puts "                             "
-    puts "#{@story_hash[:HRW].story_url}"
-    puts "                                 "
-    puts "#{@story_hash[:HRW].abstract}"
-    puts "                           "
-    story_selector_segue
+    hrw_story_display
     elsif input == "4"
-    puts "                             "
-    puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
-    puts "                              "
-    puts "#{@story_hash[:SPLC].headline}"
-    puts "                               "
-    puts "#{@story_hash[:SPLC].story_url}"
-    puts "                               "
-    puts "#{@story_hash[:SPLC].abstract}"
-    puts "                               "
-    story_selector_segue
+    splc_story_display
     elsif input == "back"
     story_selector_segue
   else 
@@ -245,9 +268,9 @@ def randomizer
   if x == 1
     puts "                            "
     puts "#{@story_hash[:ACLU].source} (#{@story_hash[:ACLU].home_url})"
-    puts "                              "
+    puts "------------------------------------------"
     puts "#{@story_hash[:ACLU].headline}"
-    puts "       "
+    puts "------------------------------------------"
     puts "#{@story_hash[:ACLU].story_url}"
     puts "          "
     puts "#{@story_hash[:ACLU].abstract}"
@@ -256,9 +279,9 @@ def randomizer
     elsif x == 2
     puts "                   "
     puts "#{@story_hash[:Amnesty].source} (#{@story_hash[:Amnesty].home_url})"
-    puts "                     "
+    puts "------------------------------------------"
     puts "#{@story_hash[:Amnesty].headline}"
-    puts "                        "
+    puts "------------------------------------------"
     puts "#{@story_hash[:Amnesty].story_url}"
     puts "                             "
     puts "#{@story_hash[:Amnesty].abstract}"
@@ -267,9 +290,9 @@ def randomizer
     elsif x == 3
     puts "                              "
     puts "#{@story_hash[:HRW].source} (#{@story_hash[:HRW].home_url})"
-    puts "                               "
+    puts "------------------------------------------"
     puts "#{@story_hash[:HRW].headline}"
-    puts "                               "
+    puts "------------------------------------------"
     puts "#{@story_hash[:HRW].story_url}"
     puts "                               "
     puts "#{@story_hash[:HRW].abstract}"
@@ -278,9 +301,9 @@ def randomizer
     elsif x == 4
     puts "                                "
     puts "#{@story_hash[:SPLC].source} (#{@story_hash[:SPLC].home_url})"
-    puts "                                "
+    puts "------------------------------------------"
     puts "#{@story_hash[:SPLC].headline}"
-    puts "                                "
+    puts "------------------------------------------"
     puts "#{@story_hash[:SPLC].story_url}"
     puts "                                "
     puts "#{@story_hash[:SPLC].abstract}"

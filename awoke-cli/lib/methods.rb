@@ -143,21 +143,33 @@ end
 def welcome_menu
   puts "                                      "
   puts "Welcome to WokeApp! Select by story or use our randomizer."
+  puts "                                      "
 	puts "For story selection, type ‘story'"
 	puts "For randomizer, type ‘random'"
 	puts "To exit, type ‘exit’"
 	puts "                                     "
 	input = gets.strip
 	if input == "exit"
-		puts "Thanks for using WokeApp!"
+	  exit_strategy
 		elsif input == "story"
 		story_selector
 		elsif input == "random"
 		randomizer
 		else
-		  menu_redirect
+		  puts "                           "
+		  puts "Sorry, we didn't recognize that input. Redirecting..."
+		  puts "                                  "
+		  welcome_menu
 		end
   end 
+  
+def exit_strategy
+  puts "        "
+  puts "Thanks for using WokeApp!"
+  puts "                            "
+  puts "Questions? Comments?  Email the WokeApp team at o.a.koenig@gmail.com"
+  puts "                            "
+end
 
 def story_selector_segue
   puts "To go back to headlines, type 'headlines'"
@@ -172,10 +184,10 @@ def story_selector_segue
     elsif input == "random"
     randomizer
     elsif input == "exit"
-    puts "        "
-    puts "Thanks for using WokeApp!"
+    exit_strategy
   else
-    menu_redirect
+    puts "Sorry, we didn't recognize that input.  Redirecting..."
+    story_selector_segue
   end
 end
 
@@ -189,7 +201,7 @@ def aclu_story_display
   puts "                            "
   puts "#{@story_hash[:ACLU].abstract}"
   puts "                             "
-  puts "Continue reading at"
+  puts "Continue reading at..."
   puts "#{@story_hash[:ACLU].story_url}"
   puts "                                 "
   story_selector_segue
@@ -282,6 +294,3 @@ def randomizer
     story_selector_segue
   end
 end
-  
-
-

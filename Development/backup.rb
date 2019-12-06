@@ -13,13 +13,13 @@ def the_aclu_headline_scraper
   step_1 = doc_aclu.css("div#hp__top_spotlight")
   headline_aclu = step_1.css("div")[4].children[0].text.strip
   backup_headline = doc_aclu.css('span.is-uppercase').text
-  error = "Sorry, still waiting on headline from ACLU.org..."
+  error_headline = "Sorry, still waiting on headline from ACLU.org..."
   if !headline_aclu.scan(/\w/) && !!backup_headline.scan(/\w/)
     backup_headline
     elsif !!headline_aclu.scan(/\w/)
     headline_aclu
   else 
-    error
+    error_headline
   end
 end
 
@@ -27,15 +27,11 @@ def the_amnesty_headline_scraper
   html_amnesty = open("https://www.amnesty.org/en/")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
   headline_amnesty = "#{doc_amnesty.css('span.heading--tape').text}: #{doc_amnesty.css('p.image-headline__copy').text}"
-  
-  
-  if headline_amnesty.scan(/\w/)
-    headline_amnesty
-    elsif !headline_amnesty.scan(/\w/)
-    c
+  error_headline = "Sorry, still waiting on headline from Amnesty International USA"
+  if !!headline_amnesty.scan(/\w/)
     headline_amnesty
   else 
-    puts "Sorry, still waiting on headline from Amnesty International USA"
+    error_headline
   end
 end
 
@@ -43,10 +39,11 @@ def the_hrw_headline_scraper
   html_hrw = open("https://www.hrw.org/#")
   doc_hrw = Nokogiri::HTML(html_hrw)
   headline_hrw = doc_hrw.css('h3.billboard-title').text
-  if headline_hrw.scan(/\w/)
+  error_headline = "Sorry, still waiting on headline from Human Rights Watch..."
+  if !!headline_hrw.scan(/\w/)
     headline_hrw
   else
-    puts "Sorry, still waiting on headline from Human Rights Watch..."
+    error_headline
   end
 end
 
@@ -54,10 +51,11 @@ def the_splc_headline_scraper
   html_splc = open("https://www.splcenter.org")
   doc_splc = Nokogiri::HTML(html_splc)
   headline_splc = doc_splc.css("h1").first.text
+  error_headline = "Sorry, still waiting on headline from SPLC.org..."
   if headline_splc.scan(/\w/)
     headline_splc
   else
-    puts "Sorry, still waiting on headline from SPLC.org..."
+    error_headline
   end
 end
 
@@ -67,18 +65,19 @@ def the_aclu_url_scraper
   step_1 = doc_aclu.css("div#hp__top_spotlight")
   step_2 = step_1.css("a")[0].to_a
   aclu_url = step_2[0][1]
-  if aclu_url.scan(/\w/)
-    aclu_url
-    elsif !aclu_url.scan(/\w/)
-    step_a_1 = doc_aclu.css("div#hp__top_carousel")
-    step_a_2 = step_a_1.css("div.columns")
-    step_a_3 = step_a_2.children
-    step_a_4 = step_a_3[11]
-    step_a_5 = step_a_4.css("a").first
-    aclu_url = step_a_5.attributes["href"].value
+  step_a_1 = doc_aclu.css("div#hp__top_carousel")
+  step_a_2 = step_a_1.css("div.columns")
+  step_a_3 = step_a_2.children
+  step_a_4 = step_a_3[11]
+  step_a_5 = step_a_4.css("a").first
+  backup_url = step_a_5.attributes["href"].value
+  error_url = "Sorry, waiting on article URL from ACLU.org..."
+  if !aclu_url.scan(/\w/) && !!backup_url.scan(/\w/)
+    backup_url
+    elsif !!aclu_url.scan(/\w/)
     aclu_url
   else 
-    puts "Sorry, waiting on article URL from ACLU.org..."
+    error_url
   end
 end
 
@@ -88,10 +87,11 @@ def the_amnesty_url_scraper
   step_1 = doc_amnesty.xpath('//div/a/@href')
   step_2 = step_1[9].text
   amnesty_url = "https://www.amnesty.org/#{step_2}"
-  if amnesty_url.scan(/\w/)
+  error_url = "Sorry, still waiting on article URL from Amnesty International USA..."
+  if !!amnesty_url.scan(/\w/)
     amnesty_url
-  else 
-    puts "Sorry, still waiting on article URL from Amnesty International USA..."
+  else
+    error_url
   end
 end 
 
@@ -99,7 +99,8 @@ def the_hrw_url_scraper
   html_hrw = open("https://www.hrw.org")
   doc_hrw = Nokogiri::HTML(html_hrw)
   hrw_url = "https://www.hrw.org#{doc_hrw.css("h3.billboard-title a").map { |link| link["href"] }[0]}"
-  if hrw_url.scan(/\w/)
+  error_url = "Sorry, still waiting on article URL from Human Rights Watch..."
+  if !!hrw_url.scan(/\w/)
     hrw_url
   else
     puts "Sorry, still waiting on article URL from Human Rights Watch..."
@@ -114,25 +115,26 @@ def the_splc_url_scraper
   step_3 = step_2[0].children
   step_4 = step_3[1].children.text
   splc_url = step_4.match(/https.*\w/)
-  if splc_url.scan(/\w/)
+  error_url = "Sorry, still waiting on article URL from SPLCenter.org..."
+  if !!splc_url.scan(/\w/)
     splc_url
   else 
-    puts "Sorry, still waiting on article URL from SPLC.org..."
-    
-
+    error_url
+  end
 end
 
 def the_aclu_abstract_scraper
   html_aclu = open("#{the_aclu_url_scraper}")
   doc_aclu = Nokogiri::HTML(html_aclu)
   aclu_abstract = "#{doc_aclu.css("p")[1].text}     #{doc_aclu.css("p")[2].text}"
-  if aclu_abstract.scan(/\w/)
-    aclu_abstract
-    elsif !aclu_abstract.scan(/\w/)
-    aclu_abstract = doc_aclu.css("div#tabs").text
+  backup_abstract = doc_aclu.css("div#tabs").text
+  error_abstract = "Sorry, still waiting on article abstract from ACLU.org..."
+  if !aclu_abstract.scan(/\w/) && !!aclu_abstract.scan(/\w/)
+    backup_abstract
+    elsif !!aclu_abstract.scan(/\w/)
     aclu_abstract
   else
-    puts "Sorry, still waiting on article abstract from ACLU.org..."
+    error_abstract
   end
 end
 
@@ -140,13 +142,15 @@ def the_amnesty_abstract_scraper
   html_amnesty = open("#{the_amnesty_url_scraper}")
   doc_amnesty = Nokogiri::HTML(html_amnesty)
   amnesty_abstract = doc_amnesty.css("p")[6].text
-  if amnesty_abstract.scan(/\w/)
+  backup_abstract = doc_amnesty.css("p").text
+  error_abstract = "Sorry, still waiting on article abstract from Amnesty International USA..."
+  if !amnesty_abstract.scan(/\w/) && !!backup_abstract.scan(/\w/)
+    backup_abstract
+    elsif !!amnesty_abstract.scan(/\w/)
     amnesty_abstract
-    elsif !amnesty_abstract.scan(/\w/)
-    amnesty_abstract = doc_amnesty.css("p").text
-    amnesty_abstract
-  else 
-    puts "Sorry, still waiting on article abstract from Amnesty International USA..."
+  else
+    error_abstract
+  end
 end
 
 def the_hrw_abstract_scraper
@@ -154,20 +158,24 @@ def the_hrw_abstract_scraper
   doc_hrw = Nokogiri::HTML(html_hrw)
   step_1 = doc_hrw.css("p")
   hrw_abstract = "#{step_1[4].text}   #{step_1[5].text}   #{step_1[6].text}"
-  if hrw_abstract.scan(/\w/)
+  error_abstract = "Sorry, still waiting on article abstract from Human Rights Watch..."
+  if !!hrw_abstract.scan(/\w/)
     hrw_abstract
   else 
-    puts "Sorry, still waiting on article abstract from Human Rights Watch..."
+    error_abstract
+  end
 end
 
 def the_splc_abstract_scraper
   html_splc = open("#{the_splc_url_scraper}")
   doc_splc = Nokogiri::HTML(html_splc)
   splc_abstract = doc_splc.css("p").first.text
-  if splc_abstract.scan(/\w/)
+  error_abstract = "Sorry, still waiting on article abstract from SPLC.org"
+  if !!splc_abstract.scan(/\w/)
     splc_abstract
   else
-    puts "Sorry, still waiting on article abstract from SPLC.org"
+    error_abstract
+  end
 end
 
 def aclu_object_maker
